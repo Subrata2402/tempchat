@@ -3,7 +3,8 @@
  * Shows incoming connection request
  */
 
-import './ConnectionRequest.css';
+import { useState } from 'react';
+import '../styles/components/ConnectionRequest.css';
 
 const ConnectionRequest = ({ request, onAccept, onDecline }) => {
   if (!request) return null;

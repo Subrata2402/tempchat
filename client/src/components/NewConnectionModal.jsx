@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import './NewConnectionModal.css';
+import '../styles/components/NewConnectionModal.css';
 
 const NewConnectionModal = ({ isOpen, onClose, onConnect }) => {
   const [targetUserId, setTargetUserId] = useState('');

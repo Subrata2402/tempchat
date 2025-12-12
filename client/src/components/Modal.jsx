@@ -3,7 +3,7 @@
  * Reusable modal for alerts and notifications
  */
 
-import './Modal.css';
+import '../styles/components/Modal.css';
 
 const Modal = ({ isOpen, title, message, type = 'info', onClose, icon }) => {
   if (!isOpen) return null;

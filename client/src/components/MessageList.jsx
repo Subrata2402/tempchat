@@ -6,7 +6,7 @@
 import { useEffect, useRef } from 'react';
 import { useChatContext } from '../context/ChatContext';
 import MessageBubble from './MessageBubble';
-import './MessageList.css';
+import '../styles/components/MessageList.css';
 
 const MessageList = ({ myUserId }) => {
   const { getActiveConnection } = useChatContext();

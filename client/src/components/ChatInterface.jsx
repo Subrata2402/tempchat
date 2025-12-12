@@ -8,7 +8,7 @@ import { useChatContext } from '../context/ChatContext';
 import MessageList from './MessageList';
 import ChatList from './ChatList';
 import Snackbar from './Snackbar';
-import './ChatInterface.css';
+import '../styles/components/ChatInterface.css';
 
 const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping, onDisconnect, requestConnection }) => {
   const { myUserId, getActiveConnection, markAsRead, activeConnectionId } = useChatContext();

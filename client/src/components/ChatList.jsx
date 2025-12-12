@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { useChatContext } from '../context/ChatContext';
 import NewConnectionModal from './NewConnectionModal';
-import './ChatList.css';
+import '../styles/components/ChatList.css';
 
 const ChatList = ({ onDisconnect, onShowSnackbar, onConnect, isMobileOpen, onCloseMobile }) => {
   const { myUserId, connections, activeConnectionId, setActiveConnectionId, markAsRead } = useChatContext();

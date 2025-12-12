@@ -10,7 +10,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import ConnectionRequest from './components/ConnectionRequest';
 import ChatInterface from './components/ChatInterface';
 import Modal from './components/Modal';
-import './App.css';
+import './styles/App.css';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 

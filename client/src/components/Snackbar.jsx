@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import './Snackbar.css';
+import '../styles/components/Snackbar.css';
 
 const Snackbar = ({ message, isOpen, onClose, duration = 3000 }) => {
   useEffect(() => {

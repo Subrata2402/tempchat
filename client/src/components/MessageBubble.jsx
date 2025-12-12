@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import './MessageBubble.css';
+import '../styles/components/MessageBubble.css';
 
 const MessageBubble = ({ message, isOwn }) => {
   const [copiedIndex, setCopiedIndex] = useState(null);

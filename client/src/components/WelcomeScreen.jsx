@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useChatContext } from '../context/ChatContext';
-import './WelcomeScreen.css';
+import '../styles/components/WelcomeScreen.css';
 
 const WelcomeScreen = ({ onConnect }) => {
   const { myUserId, connectionStatus } = useChatContext();
