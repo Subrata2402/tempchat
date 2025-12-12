@@ -4,6 +4,20 @@ A modern, real-time chat application where users can communicate temporarily wit
 
 ![TempChat](https://img.shields.io/badge/React-18.2.0-blue) ![Express](https://img.shields.io/badge/Express-4.18.2-green) ![Socket.IO](https://img.shields.io/badge/Socket.IO-4.7.2-black)
 
+## Screenshots
+
+### Welcome Screen
+![Welcome Screen](./images/welcome_screen.png)
+*Initial screen where users can see their temporary ID and connect with others*
+
+### Connection Request
+![Incoming Connection](./images/incoming_call.png)
+*Notification when another user wants to connect*
+
+### Chat Interface
+![Chat Screen](./images/chat_screen.png)
+*Real-time chat interface with message history and typing indicators*
+
 ## Features
 
 ✨ **No Registration Required** - Just open and chat  
