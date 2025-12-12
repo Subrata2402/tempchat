@@ -3,6 +3,11 @@ node_modules/
 client/node_modules/
 server/node_modules/
 
+# firebase-debug logs
+client/firebase-debug.log*
+client/.firebaserc
+client/firebase.json
+
 # Build outputs
 client/dist/
 client/build/
