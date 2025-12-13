@@ -11,10 +11,11 @@ import Snackbar from './Snackbar';
 import '../styles/components/ChatInterface.css';
 
 const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping, onDisconnect, requestConnection }) => {
-  const { myUserId, getActiveConnection, markAsRead, activeConnectionId } = useChatContext();
+  const { myUserId, getActiveConnection, markAsRead, activeConnectionId, addMessage } = useChatContext();
   const [inputMessage, setInputMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [snackbar, setSnackbar] = useState({ isOpen: false, message: '' });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const fileInputRef = useRef(null);
@@ -80,6 +81,20 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
     const message = inputMessage.trim();
     if (!message || !roomId || !connectedUserId) return;
 
+    // Add message to UI immediately
+    const textMessage = {
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      from: myUserId,
+      to: connectedUserId,
+      message: message,
+      type: 'text',
+      roomId,
+      timestamp: new Date().toISOString()
+    };
+    
+    addMessage(activeConnectionId, textMessage);
+    
+    // Send to server
     onSendMessage(message, roomId, connectedUserId, 'text');
     setInputMessage('');
     onStopTyping(roomId, connectedUserId);
@@ -102,10 +117,10 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
     const file = e.target.files[0];
     if (!file) return;
 
-    // Check file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024;
+    // Check file size (max 1GB)
+    const maxSize = 1024 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert('File size must be less than 10MB');
+      showSnackbar('File size must be less than 1GB');
       return;
     }
 
@@ -116,11 +131,22 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
     if (!selectedFile || !roomId || !connectedUserId || uploading) return;
 
     setUploading(true);
+    setUploadProgress(5);
     
     try {
-      // Read file as base64
       const reader = new FileReader();
+      
+      // Track reading progress
+      reader.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = Math.round((event.loaded / event.total) * 80); // 0-80% for reading
+          setUploadProgress(Math.max(progress, 5));
+        }
+      };
+      
       reader.onload = () => {
+        setUploadProgress(85);
+        
         const fileData = {
           name: selectedFile.name,
           size: selectedFile.size,
@@ -128,24 +154,47 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
           data: reader.result
         };
 
+        // Create message that will be sent
+        const fileMessage = {
+          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          from: myUserId,
+          to: connectedUserId,
+          type: 'file',
+          file: fileData,
+          roomId,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Add to UI immediately
+        addMessage(activeConnectionId, fileMessage);
+        
+        setUploadProgress(90);
+        
+        // Send to server
         onSendFile(fileData, roomId, connectedUserId, (error) => {
-          console.error('Error sending file:', error);
-          showSnackbar('Failed to send file');
-          setUploading(false);
+          if (error) {
+            console.error('Error sending file:', error);
+            showSnackbar('Failed to send file');
+          }
         });
         
-        setSelectedFile(null);
-        setUploading(false);
+        setUploadProgress(100);
         
-        // Reset file input
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
+        // Clean up
+        setTimeout(() => {
+          setSelectedFile(null);
+          setUploading(false);
+          setUploadProgress(0);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+        }, 300);
       };
 
       reader.onerror = () => {
         showSnackbar('Failed to read file');
         setUploading(false);
+        setUploadProgress(0);
       };
 
       reader.readAsDataURL(selectedFile);
@@ -153,11 +202,13 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
       console.error('Error sending file:', error);
       showSnackbar('Failed to send file');
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
   const handleCancelFile = () => {
     setSelectedFile(null);
+    setUploadProgress(0);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -236,8 +287,19 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
                   <div className="file-info">
                     <span className="file-name">{selectedFile.name}</span>
                     <span className="file-size">
-                      {(selectedFile.size / 1024).toFixed(2)} KB
+                      {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                     </span>
+                    {uploading && (
+                      <div className="upload-progress">
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-fill" 
+                            style={{ width: `${uploadProgress}%` }}
+                          ></div>
+                        </div>
+                        <span className="progress-text">{uploadProgress}%</span>
+                      </div>
+                    )}
                   </div>
                   <button 
                     type="button" 
@@ -253,7 +315,7 @@ const ChatInterface = ({ onSendMessage, onSendFile, onStartTyping, onStopTyping,
                     className="file-send"
                     disabled={uploading}
                   >
-                    {uploading ? 'Sending...' : 'Send'}
+                    {uploading ? 'Uploading...' : 'Send'}
                   </button>
                 </div>
               </div>

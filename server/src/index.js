@@ -29,7 +29,7 @@ app.use(express.json());
 // Socket.IO setup
 const io = new Server(httpServer, {
   cors: corsOptions,
-  maxHttpBufferSize: 1e8 // 100MB for file uploads
+  maxHttpBufferSize: 1e9 // 1GB for file uploads
 });
 
 // Health check endpoint

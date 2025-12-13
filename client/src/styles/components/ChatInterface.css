@@ -382,6 +382,37 @@
   color: var(--text-secondary);
 }
 
+/* Upload Progress Styles */
+.upload-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #667eea;
+  min-width: 35px;
+  text-align: right;
+}
+
 .file-cancel,
 .file-send {
   padding: 0.5rem 1rem;

@@ -69,16 +69,20 @@ export const useSocket = (serverUrl, setModal) => {
     // Message received
     socket.on('message:received', (messageData) => {
       const { from, to } = messageData;
-      
-      // Find the connection - look for the other user (not yourself)
       const myUserId = contextRef.current.myUserId;
-      const otherUserId = from === myUserId ? to : from;
-      const connection = contextRef.current.getConnectionByUserId(otherUserId);
+      
+      // Ignore messages we sent ourselves (we already added them to UI)
+      if (from === myUserId) {
+        return;
+      }
+      
+      // Find the connection - look for the sender
+      const connection = contextRef.current.getConnectionByUserId(from);
       
       if (connection) {
         contextRef.current.addMessage(connection.connectionId, messageData);
       } else {
-        console.warn('Connection not found for message:', { otherUserId, messageData });
+        console.warn('Connection not found for message:', { from, messageData });
       }
     });
 

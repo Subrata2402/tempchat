@@ -129,8 +129,8 @@ export const setupSocketHandlers = (io) => {
         timestamp: new Date().toISOString()
       };
 
-      // Send to the room (both users)
-      io.to(roomId).emit('message:received', messageData);
+      // Send to the room (excluding sender for text, sender already has it in UI)
+      socket.to(roomId).emit('message:received', messageData);
       
       logInfo(`Message from ${user.userId} to ${targetUserId} in ${roomId} (type: ${type})`);
     });
@@ -162,8 +162,8 @@ export const setupSocketHandlers = (io) => {
         timestamp: new Date().toISOString()
       };
 
-      // Send to the room (both users)
-      io.to(roomId).emit('message:received', messageData);
+      // Send to the room (excluding sender to avoid duplicates)
+      socket.to(roomId).emit('message:received', messageData);
       
       logInfo(`File from ${user.userId} to ${targetUserId} in ${roomId}: ${file.name}`);
     });
